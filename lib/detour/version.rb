@@ -1,3 +1,3 @@
-module LinkFilter
+module Detour
   VERSION = "0.0.1"
 end
