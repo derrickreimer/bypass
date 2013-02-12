@@ -1,5 +1,7 @@
 # Detour
 
+[![Build Status](https://travis-ci.org/djreimer/detour.png?branch=master)](https://travis-ci.org/djreimer/detour)
+
 TODO: Write a gem description
 
 ## Installation
