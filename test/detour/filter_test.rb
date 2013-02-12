@@ -13,7 +13,6 @@ class Detour::FilterTest < Test::Unit::TestCase
     should "yield plain-text URLs" do
       result = []
       urls = [@urls[:google], @urls[:yahoo]]
-      
       text = <<-END
         Chuck sirloin beef ribs jowl prosciutto pancetta meatball 
         #{@urls[:google]}. Jowl leberkas meatball, short ribs sausage 
@@ -30,7 +29,6 @@ class Detour::FilterTest < Test::Unit::TestCase
     should "yield hrefs" do
       result = []
       urls = [@urls[:twitter]]
-      
       text = <<-END
         Chuck sirloin beef ribs jowl prosciutto pancetta meatball 
         Jowl leberkas meatball, <a href="#{@urls[:twitter]}">Link</a> 
@@ -47,7 +45,6 @@ class Detour::FilterTest < Test::Unit::TestCase
     should "yield hrefs and plain-text URLs" do
       result = []
       urls = [@urls[:google], @urls[:yahoo], @urls[:twitter]]
-      
       text = <<-END
         Bacon ipsum dolor sit amet swine spare ribs chuck sirloin beef ribs 
         jowl prosciutto pancetta meatball (#{@urls[:google]}).
@@ -60,6 +57,24 @@ class Detour::FilterTest < Test::Unit::TestCase
       end
       
       assert_equal urls, result
+    end
+    
+    should "replace urls" do
+      replacements = ["GOOGLE", "YAHOO"]
+      text = "#{@urls[:google]} <a href=\"#{@urls[:yahoo]}\">Yahoo</a>"
+      filter = Detour::Filter.new(text)
+      filter.replace { replacements.shift }
+      
+      assert_equal "GOOGLE <a href=\"YAHOO\">Yahoo</a>", filter.text
+    end
+    
+    should "not replace urls inside a-tags" do      
+      text = "<a href=\"#{@urls[:yahoo]}\">#{@urls[:yahoo]}</a>"
+      
+      filter = Detour::Filter.new(text)
+      filter.replace { "YAHOO" }
+      
+      assert_equal "<a href=\"YAHOO\">#{@urls[:yahoo]}</a>", filter.text
     end
   end
 end

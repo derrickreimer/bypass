@@ -3,7 +3,8 @@ require 'nokogiri'
 
 module Detour
   class Filter
-    attr_reader :text, :options
+    attr_accessor :text
+    attr_reader :options
     
     URL_PATTERN = /\bhttps?:\/\/
       [a-zA-Z0-9\-\._~:\/\?#\[\]@!$&'\(\)\*\+,;=%]+
@@ -28,11 +29,17 @@ module Detour
       parsed_text.traverse do |node|
         case node.name
         when "text"
-          replace_text_urls!(node.text) { |url| yield(url) }
+          unless node.path.split("/").include?("a")
+            text = node.text
+            replace_text_urls!(text) { |url| yield(url) }
+            node.content = text
+          end
         when "a"
           node.set_attribute("href", yield(node.get_attribute("href")))
         end
       end
+      
+      self.text = parsed_text.to_s
     end
     
   end
