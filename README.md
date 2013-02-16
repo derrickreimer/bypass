@@ -33,10 +33,10 @@ text = "...Some text to process..."
 filter = Detour::Filter.new(text)
 
 filter.replace do |url|
-  UrlShortner.shorten(url)
+  UrlShortener.shorten(url)
 end
 
-parsed_text = filter.text
+processed_text = filter.text
 ```
 
 ## Contributing

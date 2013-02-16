@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper.rb'
 
-class Detour::FilterTest < Test::Unit::TestCase  
+class Detour::FilterTest < Test::Unit::TestCase
   context "#replace" do
     setup do
       @urls = {
@@ -23,7 +23,7 @@ class Detour::FilterTest < Test::Unit::TestCase
         result << url
       end
       
-      assert_equal urls, result
+      assert_equal urls.sort, result.sort
     end
     
     should "yield hrefs" do
@@ -39,7 +39,7 @@ class Detour::FilterTest < Test::Unit::TestCase
         result << url
       end
       
-      assert_equal urls, result
+      assert_equal urls.sort, result.sort
     end
     
     should "yield hrefs and plain-text urls" do
@@ -56,7 +56,7 @@ class Detour::FilterTest < Test::Unit::TestCase
         result << url
       end
       
-      assert_equal urls, result
+      assert_equal urls.sort, result.sort
     end
     
     should "replace urls" do
@@ -93,6 +93,61 @@ class Detour::FilterTest < Test::Unit::TestCase
       filter = Detour::Filter.new(text)
       filter.replace { "YAHOO" }
       assert_equal "YAHOO,", filter.text
+    end
+  end
+  
+  context "#auto_link" do
+    setup do
+      @urls = {
+        :google => "http://www.google.com/",
+        :yahoo => "http://www.yahoo.com/",
+        :twitter => "https://twitter.com/"
+      }
+    end
+    
+    should "auto link plain text URLs" do
+      text = <<-END
+        Chuck #{@urls[:google]}. Jowl leberkas, 
+        andouille chicken (#{@urls[:yahoo]}) 
+        tenderloin.
+      END
+      
+      linked_text = <<-END
+        Chuck <a href="#{@urls[:google]}">#{@urls[:google]}</a>. Jowl leberkas, 
+        andouille chicken (<a href="#{@urls[:yahoo]}">#{@urls[:yahoo]}</a>) 
+        tenderloin.
+      END
+      
+      filter = Detour::Filter.new(text)
+      assert_equal linked_text, filter.auto_link.text
+    end
+  end
+  
+  context "#anchor_tag" do
+    should "use the right text and href" do
+      filter = Detour::Filter.new("")
+      tag = "<a href=\"http://www.google.com\">Google</a>"
+      assert_equal tag, filter.anchor_tag("Google", "http://www.google.com")
+    end
+    
+    should "include allowed attributes" do
+      filter = Detour::Filter.new("")
+      tag = "<a href=\"http://www.google.com\" class=\"button\">Google</a>"
+      assert_equal tag, filter.anchor_tag("Google", "http://www.google.com", :class => "button")
+    end
+    
+    should "not include text option" do
+      filter = Detour::Filter.new("")
+      tag = "<a href=\"http://www.google.com\">Google</a>"
+      assert_equal tag, filter.anchor_tag("Google", "http://www.google.com", :text => "foo")
+      assert_equal tag, filter.anchor_tag("Google", "http://www.google.com", "text" => "foo")
+    end
+    
+    should "not include href option" do
+      filter = Detour::Filter.new("")
+      tag = "<a href=\"http://www.google.com\">Google</a>"
+      assert_equal tag, filter.anchor_tag("Google", "http://www.google.com", :href => "foo")
+      assert_equal tag, filter.anchor_tag("Google", "http://www.google.com", "href" => "foo")
     end
   end
 end
