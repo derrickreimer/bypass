@@ -8,21 +8,11 @@ module Detour
     
     URL_PATTERN = /\bhttps?:\/\/
       [a-zA-Z0-9\-\._~:\/\?#\[\]@!$&'\(\)\*\+,;=%]+
-      [a-zA-Z0-9\-_~:\/\?#\[\]@!$&\*\+,;=%]/x
+      [a-zA-Z0-9\-_~:\/\?#\[\]@!$&\*\+;=%]/x
     
     def initialize(text, options = {})
       @text = text
       @options = options
-    end
-    
-    def parsed_text
-      @parsed_text ||= Nokogiri::HTML::DocumentFragment.parse(text)
-    end
-    
-    def replace_text_urls!(text, &block)
-      text.gsub!(URL_PATTERN) do |match|
-        yield(match.to_s)
-      end
     end
     
     def replace(&block)
@@ -41,6 +31,17 @@ module Detour
       
       self.text = parsed_text.to_s
     end
+  
+  private
+  
+    def replace_text_urls!(text, &block)
+      text.gsub!(URL_PATTERN) do |match|
+        yield(match.to_s)
+      end
+    end
     
+    def parsed_text
+      @parsed_text ||= Nokogiri::HTML::DocumentFragment.parse(text)
+    end
   end
 end
