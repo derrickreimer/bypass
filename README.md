@@ -35,6 +35,8 @@ filter = Detour::Filter.new(text)
 filter.replace do |url|
   UrlShortner.shorten(url)
 end
+
+parsed_text = filter.text
 ```
 
 ## Contributing
