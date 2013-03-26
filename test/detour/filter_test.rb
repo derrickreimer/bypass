@@ -112,14 +112,14 @@ class Detour::FilterTest < Test::Unit::TestCase
         tenderloin.
       END
       
-      linked_text = <<-END
+      linked_text = <<-END.chomp
         Chuck <a href="#{@urls[:google]}">#{@urls[:google]}</a>. Jowl leberkas, 
         andouille chicken (<a href="#{@urls[:yahoo]}">#{@urls[:yahoo]}</a>) 
         tenderloin.
       END
       
       filter = Detour::Filter.new(text)
-      assert_equal linked_text, filter.auto_link.text
+      assert_equal linked_text, filter.auto_link.text.chomp
     end
   end
   
