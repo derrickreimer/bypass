@@ -1,6 +1,7 @@
 # Detour
 
 [![Build Status](https://travis-ci.org/djreimer/detour.png?branch=master)](https://travis-ci.org/djreimer/detour)
+[![Code Climate](https://codeclimate.com/github/djreimer/detour.png)](https://codeclimate.com/github/djreimer/detour)
 
 Detour is a Ruby gem that scans arbitrary strings of text and allows you to
 filter or replace each URL.
