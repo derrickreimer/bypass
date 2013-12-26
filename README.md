@@ -1,6 +1,12 @@
 # Detour
 
-TODO: Write a gem description
+[![Build Status](https://travis-ci.org/djreimer/detour.png?branch=master)](https://travis-ci.org/djreimer/detour)
+[![Code Climate](https://codeclimate.com/github/djreimer/detour.png)](https://codeclimate.com/github/djreimer/detour)
+
+Detour is a Ruby gem that scans arbitrary strings of text and allows you to
+filter or replace each URL.
+
+Extracted from [Drip](http://www.getdrip.com/).
 
 ## Installation
 
@@ -18,7 +24,21 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Suppose you have a string that contains any number of URLs and/or hyperlinks
+that you would like to replace with shortened versions. You are in luck!
+Use the `#replace` method to iterate over each URL and replace with anything
+you'd like (the return value of the block):
+
+```ruby
+text = "...Some text to process..."
+filter = Detour::Filter.new(text)
+
+filter.replace do |url|
+  UrlShortener.shorten(url)
+end
+
+processed_text = filter.text
+```
 
 ## Contributing
 
