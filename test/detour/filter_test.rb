@@ -42,23 +42,6 @@ class Detour::FilterTest < Test::Unit::TestCase
       assert_equal urls.sort, result.sort
     end
     
-    should "yield hrefs and plain-text urls" do
-      result = []
-      urls = [@urls[:google], @urls[:yahoo], @urls[:twitter]]
-      text = <<-END
-        Bacon ipsum dolor sit amet swine spare ribs chuck sirloin beef ribs 
-        jowl prosciutto pancetta meatball (#{@urls[:google]}).
-        <a href="#{@urls[:yahoo]}">Yahoo</a>
-        Follow us on Twitter at #{@urls[:twitter]}.
-      END
-      
-      Detour::Filter.new(text).replace do |url|
-        result << url
-      end
-      
-      assert_equal urls.sort, result.sort
-    end
-    
     should "replace urls" do
       replacements = ["GOOGLE", "YAHOO"]
       text = "#{@urls[:google]} <a href=\"#{@urls[:yahoo]}\">Yahoo</a>"
@@ -123,31 +106,31 @@ class Detour::FilterTest < Test::Unit::TestCase
     end
   end
   
-  context "#anchor_tag" do
+  context "#build_anchor_tag" do
     should "use the right text and href" do
       filter = Detour::Filter.new("")
       tag = "<a href=\"http://www.google.com\">Google</a>"
-      assert_equal tag, filter.anchor_tag("Google", "http://www.google.com")
+      assert_equal tag, filter.build_anchor_tag("Google", "http://www.google.com")
     end
     
     should "include allowed attributes" do
       filter = Detour::Filter.new("")
       tag = "<a href=\"http://www.google.com\" class=\"button\">Google</a>"
-      assert_equal tag, filter.anchor_tag("Google", "http://www.google.com", :class => "button")
+      assert_equal tag, filter.build_anchor_tag("Google", "http://www.google.com", :class => "button")
     end
     
     should "not include text option" do
       filter = Detour::Filter.new("")
       tag = "<a href=\"http://www.google.com\">Google</a>"
-      assert_equal tag, filter.anchor_tag("Google", "http://www.google.com", :text => "foo")
-      assert_equal tag, filter.anchor_tag("Google", "http://www.google.com", "text" => "foo")
+      assert_equal tag, filter.build_anchor_tag("Google", "http://www.google.com", :text => "foo")
+      assert_equal tag, filter.build_anchor_tag("Google", "http://www.google.com", "text" => "foo")
     end
     
     should "not include href option" do
       filter = Detour::Filter.new("")
       tag = "<a href=\"http://www.google.com\">Google</a>"
-      assert_equal tag, filter.anchor_tag("Google", "http://www.google.com", :href => "foo")
-      assert_equal tag, filter.anchor_tag("Google", "http://www.google.com", "href" => "foo")
+      assert_equal tag, filter.build_anchor_tag("Google", "http://www.google.com", :href => "foo")
+      assert_equal tag, filter.build_anchor_tag("Google", "http://www.google.com", "href" => "foo")
     end
   end
 end

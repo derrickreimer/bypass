@@ -3,8 +3,7 @@ require 'nokogiri'
 
 module Detour
   class Filter
-    attr_accessor :text
-    attr_reader :options
+    attr_reader :text, :parsed_text, :options
     
     URL_PATTERN = /\bhttps?:\/\/
       [a-zA-Z0-9\-\._~:\/\?#\[\]@!$&'\(\)\*\+,;=%]+
@@ -13,6 +12,7 @@ module Detour
     def initialize(text, options = {})
       @text = text
       @options = options
+      @parsed_text = Nokogiri::HTML::DocumentFragment.parse(text)
     end
     
     # Public: Iterates over each anchor tag and yields it to a block. The URL
@@ -28,7 +28,7 @@ module Detour
         end
       end
       
-      self.text = parsed_text.to_s
+      refresh_text
       self
     end
     
@@ -51,7 +51,7 @@ module Detour
         end
       end
       
-      self.text = parsed_text.to_s
+      refresh_text
       self
     end
     
@@ -74,7 +74,7 @@ module Detour
     #
     # Returns self.
     def auto_link(options = {})
-      replace_plain_text_urls { |url| anchor_tag(url, url, options) }
+      replace_plain_text_urls { |url| build_anchor_tag(url, url, options) }
       self
     end
     
@@ -85,10 +85,9 @@ module Detour
     # options - A Hash of additional HTML attributes.
     #
     # Returns a String.
-    def anchor_tag(text, href, options = {})
+    def build_anchor_tag(text, href, options = {})
       attributes = []
-      disallowed = [:text, :href, "text", "href"]
-      options = options.reject { |k, v| disallowed.include?(k) }
+      options = options.reject { |k, v| %w[text href].include?(k.to_s) }
       options.each { |k, v| attributes << " #{k}=\"#{v}\"" }
       "<a href=\"#{href}\"#{attributes.join(' ')}>#{text}</a>"
     end
@@ -98,15 +97,15 @@ module Detour
     end
   
   private
+
+    def refresh_text
+      @text = parsed_text.to_s
+    end
   
     def gsub_text_urls!(text, &block)
       text.gsub!(URL_PATTERN) do |match|
         yield(match.to_s)
       end
-    end
-    
-    def parsed_text
-      @parsed_text ||= Nokogiri::HTML::DocumentFragment.parse(text)
     end
   end
 end
