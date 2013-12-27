@@ -4,5 +4,5 @@ group :test do
   gem 'rake'
 end
 
-# Specify your gem's dependencies in detour.gemspec
+# Specify your gem's dependencies in bypass.gemspec
 gemspec

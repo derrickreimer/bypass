@@ -1,9 +1,9 @@
-module Detour
+module Bypass
   class TextFilter < Filter
 
     def replace(&block)
       @content = gsub_urls(content) do |url| 
-        yield(Detour::URI.parse(url)).to_s
+        yield(Bypass::URI.parse(url)).to_s
       end
     end
 

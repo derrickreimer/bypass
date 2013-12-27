@@ -1,12 +1,12 @@
 require "nokogiri"
 
-module Detour
+module Bypass
   class HTMLFilter < Filter
 
     def replace(&block)
       parsed_content.traverse do |node|
         if node.name == "a" && href = node.get_attribute("href")
-          url = yield(Detour::URI.parse(href))
+          url = yield(Bypass::URI.parse(href))
           node.set_attribute("href", url.to_s)
         end
       end

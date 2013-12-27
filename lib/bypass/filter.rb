@@ -1,4 +1,4 @@
-module Detour
+module Bypass
   class Filter
     attr_reader :content
     

@@ -1,10 +1,12 @@
-# Detour
+# Bypass
 
-[![Build Status](https://travis-ci.org/djreimer/detour.png?branch=master)](https://travis-ci.org/djreimer/detour)
-[![Code Climate](https://codeclimate.com/github/djreimer/detour.png)](https://codeclimate.com/github/djreimer/detour)
+[![Build Status](https://travis-ci.org/djreimer/bypass.png?branch=master)](https://travis-ci.org/djreimer/bypass)
+[![Code Climate](https://codeclimate.com/github/djreimer/bypass.png)](https://codeclimate.com/github/djreimer/bypass)
 
-Detour is a Ruby gem that scans arbitrary strings of text and allows you to
-filter or replace each URL.
+Bypass is a Ruby gem that scans plain text or HTML documents for URLs and
+hyperlinks and allows you to mutate or replace them with ease. This library
+was originally designed for appending tracking data and shortening link
+URLs in HTML and plain text emails.
 
 Extracted from [Drip](http://www.getdrip.com/).
 
@@ -12,7 +14,7 @@ Extracted from [Drip](http://www.getdrip.com/).
 
 Add this line to your application's Gemfile:
 
-    gem 'detour'
+    gem 'bypass'
 
 And then execute:
 
@@ -20,24 +22,53 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install detour
+    $ gem install bypass
 
 ## Usage
 
-Suppose you have a string that contains any number of URLs and/or hyperlinks
-that you would like to replace with shortened versions. You are in luck!
-Use the `#replace` method to iterate over each URL and replace with anything
-you'd like (the return value of the block):
+There are URL filters available for both plain text and HTML documents. 
+
+### Plain Text
+
+To replace all URLs in a plain text document:
 
 ```ruby
-text = "...Some text to process..."
-filter = Detour::Filter.new(text)
+text = "Visit our website: http://www.getdrip.com"
+filter = Bypass::TextFilter.new(text)
 
 filter.replace do |url|
-  UrlShortener.shorten(url)
+  url.append_to_query_values(:id => 123)
 end
 
-processed_text = filter.text
+filter.content
+#=> "Visit our website: http://www.getdrip.com?id=123"
+```
+
+### HTML
+
+To replace all `href` attributes in `a` tags in an HTML document:
+
+```ruby
+text = "Visit our website: <a href='http://www.getdrip.com'>Drip</a>"
+filter = Bypass::HTMLFilter.new(text)
+
+filter.replace do |url|
+  url.append_to_query_values(:id => 123)
+end
+
+filter.content
+#=> "Visit our website: <a href='http://www.getdrip.com?id=123'>Drip</a>"
+```
+
+To convert all non-hyperlinked URLs to hyperlinks:
+
+```ruby
+text = "Lets auto link this: http://www.google.com"
+filter = Bypass::HTMLFilter.new(text)
+filter.auto_link
+
+filter.content
+#=> "Lets auto link this: <a href='http://www.google.com'>http://www.google.com</a>"
 ```
 
 ## Contributing
