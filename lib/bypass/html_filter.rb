@@ -6,8 +6,10 @@ module Bypass
     def replace(&block)
       parsed_content.traverse do |node|
         if node.name == "a" && href = node.get_attribute("href")
-          url = yield(Bypass::URI.parse(href))
-          node.set_attribute("href", url.to_s)
+          if parsed_href = parse_uri(href)
+            url = yield(parsed_href)
+            node.set_attribute("href", url.to_s)
+          end
         end
       end
     end

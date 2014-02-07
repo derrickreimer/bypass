@@ -2,8 +2,10 @@ module Bypass
   class TextFilter < Filter
 
     def replace(&block)
-      @content = gsub_urls(content) do |url| 
-        yield(Bypass::URI.parse(url)).to_s
+      @content = gsub_urls(content) do |url|
+        if parsed_url = parse_uri(url)
+          yield(parsed_url).to_s
+        end
       end
     end
 

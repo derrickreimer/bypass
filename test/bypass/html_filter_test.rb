@@ -16,6 +16,13 @@ class Bypass::HTMLFilterTest < Test::Unit::TestCase
       filter.replace { "foo" }
       assert_equal "<a>Yahoo</a>", filter.content
     end
+
+    should "skip malformed URLs" do
+      text = "<a href=\"http://#\">Yahoo</a>"
+      filter = Bypass::HTMLFilter.new(text)
+      filter.replace { "foo" }
+      assert_equal text, filter.content
+    end
   end
 
   context "#auto_link" do

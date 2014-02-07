@@ -30,5 +30,12 @@ class Bypass::TextFilterTest < Test::Unit::TestCase
       filter.replace { "foo" }
       assert_equal "foo,", filter.content
     end
+
+    should "skip malformed URLs" do
+      text = "http://#"
+      filter = Bypass::TextFilter.new(text)
+      filter.replace { "foo" }
+      assert_equal text, filter.content
+    end
   end
 end

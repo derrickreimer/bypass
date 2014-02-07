@@ -25,5 +25,11 @@ module Bypass
         yield(match.to_s)
       end
     end
+
+    def parse_uri(uri)
+      Bypass::URI.parse(uri)
+    rescue => ex
+      nil
+    end
   end
 end
