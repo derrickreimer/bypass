@@ -23,6 +23,17 @@ class Bypass::HTMLFilterTest < Test::Unit::TestCase
       filter.replace { "foo" }
       assert_equal text, filter.content
     end
+
+    should "strip whitespace around URLs" do
+      text = "<a href=\"http://example.com \">Example</a>"
+      filter = Bypass::HTMLFilter.new(text)
+      filter.replace do |url|
+        url.append_to_query_values(:foo => "bar")
+        url
+      end
+      expected = "<a href=\"http://example.com?foo=bar\">Example</a>"
+      assert_equal expected, filter.content
+    end
   end
 
   context "#auto_link" do
