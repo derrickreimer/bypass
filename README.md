@@ -38,6 +38,7 @@ filter = Bypass::TextFilter.new(text)
 
 filter.replace do |url|
   url.append_to_query_values(:id => 123)
+  url
 end
 
 filter.content
@@ -54,6 +55,7 @@ filter = Bypass::HTMLFilter.new(text)
 
 filter.replace do |url|
   url.append_to_query_values(:id => 123)
+  url
 end
 
 filter.content
