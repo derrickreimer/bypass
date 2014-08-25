@@ -1,13 +1,14 @@
 module Bypass
   class Filter
-    attr_reader :content
+    attr_reader :content, :fragment
     
     URL_PATTERN = /\bhttps?:\/\/
       [a-zA-Z0-9\-\._~:\/\?#\[\]@!$&'\(\)\*\+,;=%]+
       [a-zA-Z0-9\-_~:\/\?#\[\]@!$&\*\+;=%]/x
     
-    def initialize(content)
+    def initialize(content, options = { :fragment => true })
       @content = content.to_s
+      @fragment = options[:fragment]
     end
 
     def replace
@@ -16,6 +17,10 @@ module Bypass
     
     def to_s
       content
+    end
+
+    def is_fragment?
+      fragment
     end
   
   private

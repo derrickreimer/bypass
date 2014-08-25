@@ -1,7 +1,7 @@
 require 'addressable/uri'
 require File.dirname(__FILE__) + '/../test_helper.rb'
 
-class Bypass::HTMLFilterTest < Test::Unit::TestCase
+class Bypass::HTMLFilterTest < MiniTest::Unit::TestCase
   context "#replace" do
     should "replace hrefs" do
       text = "<a href=\"http://yahoo.com\">Yahoo</a>"
@@ -71,6 +71,32 @@ class Bypass::HTMLFilterTest < Test::Unit::TestCase
       filter = Bypass::HTMLFilter.new("")
       filter.expects(:parsed_content).returns(stub(:to_s => "bar"))
       assert_equal "bar", filter.content
+    end
+
+    context "document fragment" do
+      filter = Bypass::HTMLFilter.new("<div>text</div>")
+      should "return fragment string" do
+        assert_equal "<div>text</div>", filter.content
+      end
+    end
+
+    context "whole document" do
+      document = """
+      <!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"http://www.w3.org/TR/REC-html40/loose.dtd\">
+      <html>
+        <head></head>
+        <body>
+          <div>text</div>
+        </body>
+      </html>
+      """
+      filter = Bypass::HTMLFilter.new(document, :fragment => false)
+
+      expected = Nokogiri::HTML::Document.parse(document).to_s
+
+      should "return whole document" do
+        assert_equal expected, filter.content
+      end
     end
   end
 end

@@ -46,11 +46,21 @@ module Bypass
     end
 
     def parsed_content
-      @parsed_content ||= parse_html_fragment(@content)
+      @parsed_content ||= begin
+        if is_fragment?
+          parse_html_fragment(@content)
+        else
+          parse_html_document(@content)
+        end
+      end
     end
 
     def parse_html_fragment(html)
       Nokogiri::HTML::DocumentFragment.parse(html)
+    end
+
+    def parse_html_document(html)
+      Nokogiri::HTML::Document.parse(html)
     end
   end
 end
