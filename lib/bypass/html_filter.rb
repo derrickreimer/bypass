@@ -47,7 +47,7 @@ module Bypass
 
     def parsed_content
       @parsed_content ||= begin
-        if is_fragment?
+        if fragment
           parse_html_fragment(@content)
         else
           parse_html_document(@content)

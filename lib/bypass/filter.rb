@@ -6,9 +6,9 @@ module Bypass
       [a-zA-Z0-9\-\._~:\/\?#\[\]@!$&'\(\)\*\+,;=%]+
       [a-zA-Z0-9\-_~:\/\?#\[\]@!$&\*\+;=%]/x
     
-    def initialize(content, options = { :fragment => true })
-      @content = content.to_s
-      @fragment = options[:fragment]
+    def initialize(content, options = {})
+      @content = content.to_s.encode("UTF-8")
+      @fragment = options.fetch(:fragment, true)
     end
 
     def replace
@@ -17,10 +17,6 @@ module Bypass
     
     def to_s
       content
-    end
-
-    def is_fragment?
-      fragment
     end
   
   private
