@@ -19,6 +19,7 @@ Gem::Specification.new do |gem|
   
   gem.add_dependency "nokogiri", "~> 1.5"
   gem.add_dependency "addressable", "~> 2.0"
-  gem.add_development_dependency "shoulda-context", "~> 1.0"
+  gem.add_development_dependency "minitest", "~> 5.0"
+  gem.add_development_dependency "shoulda-context", "~> 1.2"
   gem.add_development_dependency "mocha"
 end

@@ -1,7 +1,7 @@
 require 'addressable/uri'
 require File.dirname(__FILE__) + '/../test_helper.rb'
 
-class Bypass::FilterTest < Test::Unit::TestCase
+class Bypass::FilterTest < MiniTest::Test
   context "#to_s" do
     should "return content" do
       filter = Bypass::Filter.new("foo")

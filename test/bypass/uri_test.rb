@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper.rb'
 
-class Bypass::URITest < Test::Unit::TestCase
+class Bypass::URITest < MiniTest::Test
   context "#append_to_query_values" do
     should "add values to the query string if it starts empty" do
       uri = Bypass::URI.parse("http://www.getdrip.com")

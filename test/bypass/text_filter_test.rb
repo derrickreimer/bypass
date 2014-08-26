@@ -1,7 +1,7 @@
 require 'addressable/uri'
 require File.dirname(__FILE__) + '/../test_helper.rb'
 
-class Bypass::TextFilterTest < Test::Unit::TestCase
+class Bypass::TextFilterTest < MiniTest::Test
   context "#replace" do
     should "replace URLs" do
       text = "http://yahoo.com"
