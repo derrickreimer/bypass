@@ -1,7 +1,7 @@
 require 'addressable/uri'
 require File.dirname(__FILE__) + '/../test_helper.rb'
 
-class Bypass::HTMLFilterTest < MiniTest::Unit::TestCase
+class Bypass::HTMLFilterTest < Test::Unit::TestCase
   context "#replace" do
     should "replace hrefs" do
       text = "<a href=\"http://yahoo.com\">Yahoo</a>"
