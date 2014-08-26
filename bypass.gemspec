@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = Bypass::VERSION
   gem.authors       = ["Derrick Reimer"]
   gem.email         = ["derrickreimer@gmail.com"]
-  gem.description   = %q{Mutate URLs and hyperlinks in HTML and plain text documents with ease}
-  gem.summary       = %q{Mutate URLs and hyperlinks in HTML and plain text documents with ease}
+  gem.description   = "Mutate URLs and hyperlinks in HTML and plain text documents"
+  gem.summary       = "Mutate URLs and hyperlinks in HTML and plain text documents with ease"
   gem.homepage      = "https://github.com/djreimer/bypass"
 
   gem.files         = `git ls-files`.split($/)
