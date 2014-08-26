@@ -93,7 +93,15 @@ class Bypass::HTMLFilterTest < MiniTest::Test
       expected = document.sub("<head></head>", "<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>")
 
       filter = Bypass::HTMLFilter.new(document, :fragment => false)
-      assert_equal expected.strip, filter.content.strip
+      assert_normalized_equal expected, filter.content
     end
+  end
+
+  def assert_normalized_equal(expected, actual)
+    assert_equal normalize_output(expected), normalize_output(actual)
+  end
+
+  def normalize_output(html)
+    html.lines.map(&:strip).join("")
   end
 end
