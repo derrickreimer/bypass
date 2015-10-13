@@ -25,5 +25,11 @@ class Bypass::URITest < MiniTest::Test
       uri.append_to_query_values(:name => "Ian")
       assert_equal "http://www.getdrip.com?foo[]=bar1&foo[]=bar2&name=Ian", uri.to_s
     end
+
+    should "handle encoding" do
+      uri = Bypass::URI.parse("http://www.getdrip.com")
+      uri.append_to_query_values(:name => "Ian Nance")
+      assert_equal "http://www.getdrip.com?name=Ian%20Nance", uri.to_s
+    end
   end
 end
