@@ -35,13 +35,13 @@ class Bypass::URITest < MiniTest::Test
     should "encode keys" do
       uri = Bypass::URI.parse("http://www.getdrip.com")
       uri.append_to_query_values("first name" => "Ian")
-      assert_equal "http://www.getdrip.com?first%20name=Ian", uri.to_s
+      assert_equal "http://www.getdrip.com?first+name=Ian", uri.to_s
     end
 
     should "encode values" do
       uri = Bypass::URI.parse("http://www.getdrip.com")
       uri.append_to_query_values(:name => "Ian Nance")
-      assert_equal "http://www.getdrip.com?name=Ian%20Nance", uri.to_s
+      assert_equal "http://www.getdrip.com?name=Ian+Nance", uri.to_s
     end
   end
 end
