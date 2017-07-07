@@ -1,4 +1,5 @@
 require "addressable/uri"
+require "cgi"
 
 module Bypass
   class URI < Addressable::URI

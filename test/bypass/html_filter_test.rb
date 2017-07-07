@@ -2,6 +2,23 @@ require 'addressable/uri'
 require File.dirname(__FILE__) + '/../test_helper.rb'
 
 class Bypass::HTMLFilterTest < MiniTest::Test
+  context "content parsing" do
+    should "parse string content on the fly" do
+      filter = Bypass::HTMLFilter.new("foo")
+      filter.expects(:parse_content).returns("bar")
+      assert_equal "bar", filter.content
+      assert_equal "bar", filter.parsed_content
+    end
+
+    should "skip parsing if Nokogiri document is passed in" do
+      document = Nokogiri::HTML::DocumentFragment.parse("<html></html>")
+      filter = Bypass::HTMLFilter.new(document)
+      filter.expects(:parse_content).never
+      assert_equal document.to_s, filter.content
+      assert_equal document, filter.parsed_content
+    end
+  end
+
   context "#replace" do
     should "replace hrefs" do
       text = "<a href=\"http://yahoo.com\">Yahoo</a>"
@@ -44,7 +61,7 @@ class Bypass::HTMLFilterTest < MiniTest::Test
       assert_equal "Hello <a href=\"http://www.google.com\">http://www.google.com</a>.", filter.content
     end
 
-    should "not replace urls inside a-tags" do      
+    should "not replace urls inside a-tags" do
       text = "<a href=\"http://yahoo.com\">http://yahoo.com</a>"
       filter = Bypass::HTMLFilter.new(text)
       filter.auto_link
@@ -58,7 +75,7 @@ class Bypass::HTMLFilterTest < MiniTest::Test
       tag = "<a href=\"http://www.google.com\">Google</a>"
       assert_equal tag, filter.build_anchor_tag("Google", "http://www.google.com")
     end
-    
+
     should "include additional attributes" do
       filter = Bypass::HTMLFilter.new("")
       tag = "<a href=\"http://www.google.com\" class=\"button\">Google</a>"

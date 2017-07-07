@@ -3,6 +3,17 @@ require "nokogiri"
 module Bypass
   class HTMLFilter < Filter
 
+    def initialize(content, options = {})
+      if content.respond_to?(:traverse) # then this is Nokogiri
+        @content = content
+        @parsed_content = content
+      else
+        @content = content.to_s.encode("UTF-8")
+      end
+
+      @fragment = options.fetch(:fragment, true)
+    end
+
     def replace(&block)
       parsed_content.traverse do |node|
         if node.name == "a" && href = node.get_attribute("href")
@@ -16,7 +27,7 @@ module Bypass
 
     def auto_link(options = {})
       each_text_node do |node|
-        text = gsub_urls(node.text.to_s) do |url| 
+        text = gsub_urls(node.text.to_s) do |url|
           build_anchor_tag(url, url, options)
         end
         node.replace(parse_html_fragment(text))
@@ -29,8 +40,20 @@ module Bypass
       "<a href=\"#{href}\"#{attributes.join(' ')}>#{text}</a>"
     end
 
+    def parsed_content
+      @parsed_content ||= parse_content
+    end
+
     def content
       parsed_content.to_s
+    end
+
+    def parse_content
+      if fragment
+        parse_html_fragment(@content)
+      else
+        parse_html_document(@content)
+      end
     end
 
   private
@@ -41,16 +64,6 @@ module Bypass
           unless node.path.split("/").include?("a")
             yield(node)
           end
-        end
-      end
-    end
-
-    def parsed_content
-      @parsed_content ||= begin
-        if fragment
-          parse_html_fragment(@content)
-        else
-          parse_html_document(@content)
         end
       end
     end
